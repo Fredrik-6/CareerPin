@@ -1,8 +1,8 @@
 // CareerPin Basic Starter App with Routing
-// This adds simple navigation between Home and Profile pages
+// This adds simple navigation between Home and Profile pages and displays the saved input
 
 // Import React and routing tools
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 // Main App component
@@ -40,8 +40,18 @@ function Home() {
 
 // Profile page component
 function Profile() {
-  // React state to track input value
+  // React state to track input and display message
   const [goal, setGoal] = useState("");
+  const [message, setMessage] = useState("");
+
+  // Load goal from localStorage on first render
+  useEffect(() => {
+    const savedGoal = localStorage.getItem("careerGoal");
+    if (savedGoal) {
+      setGoal(savedGoal);
+      setMessage(`Your current saved goal is: ${savedGoal}`);
+    }
+  }, []);
 
   // Handle input change
   const handleChange = (e) => {
@@ -50,7 +60,8 @@ function Profile() {
 
   // Handle button click
   const handleClick = () => {
-    alert(`Your career goal is: ${goal}`);
+    localStorage.setItem("careerGoal", goal);
+    setMessage(`Your career goal is saved: ${goal}`);
   };
 
   return (
@@ -67,11 +78,14 @@ function Profile() {
         style={{ padding: '0.5rem', width: '100%', maxWidth: '300px', marginBottom: '1rem' }}
       />
 
-      {/* Add a basic button */}
+      {/* Submit button */}
       <br />
       <button onClick={handleClick} style={{ padding: '0.5rem 1rem' }}>
         Submit Goal
       </button>
+
+      {/* Show saved goal below */}
+      {message && <p style={{ marginTop: '1rem', fontWeight: 'bold' }}>{message}</p>}
     </div>
   );
 }
