@@ -1,24 +1,18 @@
 // CareerPin Basic Starter App with Routing
-// This adds simple navigation between Home and Profile pages and displays the saved input with improved layout
+// This adds navigation and displays saved input with improved layout + interests input
 
-// Import React and routing tools
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
-// Main App component
 function App() {
   return (
-    // Set up Router for navigation
     <Router>
       <div style={{ padding: '2rem', fontFamily: 'Arial, sans-serif' }}>
-
-        {/* Navigation bar with links */}
         <nav style={{ marginBottom: '2rem' }}>
           <Link to="/" style={{ marginRight: '1rem', fontWeight: 'bold' }}>Home</Link>
           <Link to="/profile" style={{ fontWeight: 'bold' }}>Profile</Link>
         </nav>
 
-        {/* Route definitions */}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
@@ -28,7 +22,6 @@ function App() {
   );
 }
 
-// Home page component
 function Home() {
   return (
     <div>
@@ -38,33 +31,32 @@ function Home() {
   );
 }
 
-// Profile page component
 function Profile() {
   const [goal, setGoal] = useState("");
   const [name, setName] = useState("");
   const [skills, setSkills] = useState("");
+  const [interests, setInterests] = useState("");
   const [message, setMessage] = useState("");
 
   useEffect(() => {
     const savedGoal = localStorage.getItem("careerGoal");
     const savedName = localStorage.getItem("userName");
     const savedSkills = localStorage.getItem("userSkills");
-    if (savedGoal || savedName || savedSkills) {
+    const savedInterests = localStorage.getItem("userInterests");
+    if (savedGoal || savedName || savedSkills || savedInterests) {
       if (savedGoal) setGoal(savedGoal);
       if (savedName) setName(savedName);
       if (savedSkills) setSkills(savedSkills);
+      if (savedInterests) setInterests(savedInterests);
       setMessage(`Welcome ${savedName || "User"}, your current goal is: ${savedGoal || "(none set yet)"}`);
     }
   }, []);
-
-  const handleGoalChange = (e) => setGoal(e.target.value);
-  const handleNameChange = (e) => setName(e.target.value);
-  const handleSkillsChange = (e) => setSkills(e.target.value);
 
   const handleClick = () => {
     localStorage.setItem("careerGoal", goal);
     localStorage.setItem("userName", name);
     localStorage.setItem("userSkills", skills);
+    localStorage.setItem("userInterests", interests);
     setMessage(`Welcome ${name}, your career goal is saved: ${goal}`);
   };
 
@@ -78,7 +70,7 @@ function Profile() {
         <input
           type="text"
           value={name}
-          onChange={handleNameChange}
+          onChange={(e) => setName(e.target.value)}
           placeholder="Enter your name"
           style={{ padding: '0.5rem', width: '100%', marginBottom: '1rem' }}
         />
@@ -87,7 +79,7 @@ function Profile() {
         <input
           type="text"
           value={goal}
-          onChange={handleGoalChange}
+          onChange={(e) => setGoal(e.target.value)}
           placeholder="Enter your career goal"
           style={{ padding: '0.5rem', width: '100%', marginBottom: '1rem' }}
         />
@@ -96,8 +88,17 @@ function Profile() {
         <input
           type="text"
           value={skills}
-          onChange={handleSkillsChange}
+          onChange={(e) => setSkills(e.target.value)}
           placeholder="Enter your skills (e.g. Excel, Python)"
+          style={{ padding: '0.5rem', width: '100%', marginBottom: '1rem' }}
+        />
+
+        <label style={{ display: 'block', marginBottom: '0.5rem' }}>Interests</label>
+        <input
+          type="text"
+          value={interests}
+          onChange={(e) => setInterests(e.target.value)}
+          placeholder="Enter your interests (e.g. sports, health)"
           style={{ padding: '0.5rem', width: '100%', marginBottom: '1rem' }}
         />
 
@@ -111,5 +112,4 @@ function Profile() {
   );
 }
 
-// Export the App so it can be run
 export default App;
