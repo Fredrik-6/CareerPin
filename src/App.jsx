@@ -1,5 +1,5 @@
 // CareerPin Basic Starter App with Routing
-// This adds navigation and displays saved input with improved layout + interests input
+// Now includes navigation, profile input with localStorage, and reset functionality
 
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
@@ -60,6 +60,15 @@ function Profile() {
     setMessage(`Welcome ${name}, your career goal is saved: ${goal}`);
   };
 
+  const handleReset = () => {
+    localStorage.clear();
+    setGoal("");
+    setName("");
+    setSkills("");
+    setInterests("");
+    setMessage("");
+  };
+
   return (
     <div>
       <h1>Profile Page</h1>
@@ -102,8 +111,11 @@ function Profile() {
           style={{ padding: '0.5rem', width: '100%', marginBottom: '1rem' }}
         />
 
-        <button onClick={handleClick} style={{ padding: '0.5rem 1rem', fontWeight: 'bold' }}>
+        <button onClick={handleClick} style={{ padding: '0.5rem 1rem', fontWeight: 'bold', marginRight: '1rem' }}>
           Submit
+        </button>
+        <button onClick={handleReset} style={{ padding: '0.5rem 1rem', backgroundColor: '#f44336', color: '#fff', fontWeight: 'bold' }}>
+          Reset
         </button>
       </div>
 
