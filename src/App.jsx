@@ -1,5 +1,5 @@
 // CareerPin Basic Starter App with Routing
-// Now includes optional expanded fields for education, experience, and industry
+// Refactored to use a unified userProfile object for AI processing
 
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
@@ -32,57 +32,49 @@ function Home() {
 }
 
 function Profile() {
-  const [goal, setGoal] = useState("");
-  const [name, setName] = useState("");
-  const [skills, setSkills] = useState("");
-  const [interests, setInterests] = useState("");
-  const [message, setMessage] = useState("");
+  const [userProfile, setUserProfile] = useState({
+    name: "",
+    goal: "",
+    skills: "",
+    interests: "",
+    education: "",
+    experience: "",
+    industries: ""
+  });
+
   const [showMore, setShowMore] = useState(false);
-  const [education, setEducation] = useState("");
-  const [experience, setExperience] = useState("");
-  const [industries, setIndustries] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    const savedGoal = localStorage.getItem("careerGoal");
-    const savedName = localStorage.getItem("userName");
-    const savedSkills = localStorage.getItem("userSkills");
-    const savedInterests = localStorage.getItem("userInterests");
-    const savedEducation = localStorage.getItem("userEducation");
-    const savedExperience = localStorage.getItem("userExperience");
-    const savedIndustries = localStorage.getItem("userIndustries");
-
-    if (savedGoal || savedName || savedSkills || savedInterests || savedEducation || savedExperience || savedIndustries) {
-      if (savedGoal) setGoal(savedGoal);
-      if (savedName) setName(savedName);
-      if (savedSkills) setSkills(savedSkills);
-      if (savedInterests) setInterests(savedInterests);
-      if (savedEducation) setEducation(savedEducation);
-      if (savedExperience) setExperience(savedExperience);
-      if (savedIndustries) setIndustries(savedIndustries);
-      setMessage(`Welcome ${savedName || "User"}, your current goal is: ${savedGoal || "(none set yet)"}`);
+    const saved = localStorage.getItem("userProfile");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      setUserProfile(parsed);
+      setMessage(`Welcome ${parsed.name || "User"}, your current goal is: ${parsed.goal || "(none set yet)"}`);
     }
   }, []);
 
-  const handleClick = () => {
-    localStorage.setItem("careerGoal", goal);
-    localStorage.setItem("userName", name);
-    localStorage.setItem("userSkills", skills);
-    localStorage.setItem("userInterests", interests);
-    localStorage.setItem("userEducation", education);
-    localStorage.setItem("userExperience", experience);
-    localStorage.setItem("userIndustries", industries);
-    setMessage(`Welcome ${name}, your career goal is saved: ${goal}`);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUserProfile({ ...userProfile, [name]: value });
+  };
+
+  const handleSubmit = () => {
+    localStorage.setItem("userProfile", JSON.stringify(userProfile));
+    setMessage(`Welcome ${userProfile.name}, your career goal is saved: ${userProfile.goal}`);
   };
 
   const handleReset = () => {
     localStorage.clear();
-    setGoal("");
-    setName("");
-    setSkills("");
-    setInterests("");
-    setEducation("");
-    setExperience("");
-    setIndustries("");
+    setUserProfile({
+      name: "",
+      goal: "",
+      skills: "",
+      interests: "",
+      education: "",
+      experience: "",
+      industries: ""
+    });
     setMessage("");
   };
 
@@ -93,18 +85,17 @@ function Profile() {
 
       <div style={{ border: '1px solid #ccc', padding: '1rem', borderRadius: '8px', maxWidth: '400px' }}>
         <label>Name</label>
-        <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter your name" style={{ padding: '0.5rem', width: '100%', marginBottom: '1rem' }} />
+        <input type="text" name="name" value={userProfile.name} onChange={handleChange} placeholder="Enter your name" style={{ padding: '0.5rem', width: '100%', marginBottom: '1rem' }} />
 
         <label>Career Goal</label>
-        <input type="text" value={goal} onChange={(e) => setGoal(e.target.value)} placeholder="Enter your career goal" style={{ padding: '0.5rem', width: '100%', marginBottom: '1rem' }} />
+        <input type="text" name="goal" value={userProfile.goal} onChange={handleChange} placeholder="Enter your career goal" style={{ padding: '0.5rem', width: '100%', marginBottom: '1rem' }} />
 
         <label>Skills</label>
-        <input type="text" value={skills} onChange={(e) => setSkills(e.target.value)} placeholder="Enter your skills (e.g. Excel, Python)" style={{ padding: '0.5rem', width: '100%', marginBottom: '1rem' }} />
+        <input type="text" name="skills" value={userProfile.skills} onChange={handleChange} placeholder="Enter your skills (e.g. Excel, Python)" style={{ padding: '0.5rem', width: '100%', marginBottom: '1rem' }} />
 
         <label>Interests</label>
-        <input type="text" value={interests} onChange={(e) => setInterests(e.target.value)} placeholder="Enter your interests (e.g. sports, health)" style={{ padding: '0.5rem', width: '100%', marginBottom: '1rem' }} />
+        <input type="text" name="interests" value={userProfile.interests} onChange={handleChange} placeholder="Enter your interests (e.g. sports, health)" style={{ padding: '0.5rem', width: '100%', marginBottom: '1rem' }} />
 
-        {/* Toggle Button (moved above the expandable section) */}
         <div style={{ marginBottom: '1rem' }}>
           <button onClick={() => setShowMore(!showMore)}>
             {showMore ? "Hide extra fields" : "Show more options"}
@@ -114,17 +105,17 @@ function Profile() {
         {showMore && (
           <>
             <label>Education Level</label>
-            <input type="text" value={education} onChange={(e) => setEducation(e.target.value)} placeholder="e.g. Bachelor's, A-Levels" style={{ padding: '0.5rem', width: '100%', marginBottom: '1rem' }} />
+            <input type="text" name="education" value={userProfile.education} onChange={handleChange} placeholder="e.g. Bachelor's, A-Levels" style={{ padding: '0.5rem', width: '100%', marginBottom: '1rem' }} />
 
             <label>Experience Level</label>
-            <input type="text" value={experience} onChange={(e) => setExperience(e.target.value)} placeholder="e.g. 0–1 years" style={{ padding: '0.5rem', width: '100%', marginBottom: '1rem' }} />
+            <input type="text" name="experience" value={userProfile.experience} onChange={handleChange} placeholder="e.g. 0–1 years" style={{ padding: '0.5rem', width: '100%', marginBottom: '1rem' }} />
 
             <label>Preferred Industries</label>
-            <input type="text" value={industries} onChange={(e) => setIndustries(e.target.value)} placeholder="e.g. tech, healthcare" style={{ padding: '0.5rem', width: '100%', marginBottom: '1rem' }} />
+            <input type="text" name="industries" value={userProfile.industries} onChange={handleChange} placeholder="e.g. tech, healthcare" style={{ padding: '0.5rem', width: '100%', marginBottom: '1rem' }} />
           </>
         )}
 
-        <button onClick={handleClick} style={{ padding: '0.5rem 1rem', fontWeight: 'bold', marginRight: '1rem' }}>Submit</button>
+        <button onClick={handleSubmit} style={{ padding: '0.5rem 1rem', fontWeight: 'bold', marginRight: '1rem' }}>Submit</button>
         <button onClick={handleReset} style={{ padding: '0.5rem 1rem', backgroundColor: '#f44336', color: '#fff', fontWeight: 'bold' }}>Reset</button>
       </div>
 
