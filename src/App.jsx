@@ -42,26 +42,29 @@ function Home() {
 function Profile() {
   // React state to track input and display message
   const [goal, setGoal] = useState("");
+  const [name, setName] = useState("");
   const [message, setMessage] = useState("");
 
-  // Load goal from localStorage on first render
+  // Load data from localStorage on first render
   useEffect(() => {
     const savedGoal = localStorage.getItem("careerGoal");
-    if (savedGoal) {
-      setGoal(savedGoal);
-      setMessage(`Your current saved goal is: ${savedGoal}`);
+    const savedName = localStorage.getItem("userName");
+    if (savedGoal || savedName) {
+      if (savedGoal) setGoal(savedGoal);
+      if (savedName) setName(savedName);
+      setMessage(`Welcome ${savedName || "User"}, your current goal is: ${savedGoal || "(none set yet)"}`);
     }
   }, []);
 
-  // Handle input change
-  const handleChange = (e) => {
-    setGoal(e.target.value);
-  };
+  // Handle input changes
+  const handleGoalChange = (e) => setGoal(e.target.value);
+  const handleNameChange = (e) => setName(e.target.value);
 
-  // Handle button click
+  // Handle submit
   const handleClick = () => {
     localStorage.setItem("careerGoal", goal);
-    setMessage(`Your career goal is saved: ${goal}`);
+    localStorage.setItem("userName", name);
+    setMessage(`Welcome ${name}, your career goal is saved: ${goal}`);
   };
 
   return (
@@ -69,11 +72,20 @@ function Profile() {
       <h1>Profile Page</h1>
       <p>This is where users will eventually enter their career information.</p>
 
-      {/* Text input field */}
+      {/* Name input field */}
+      <input
+        type="text"
+        value={name}
+        onChange={handleNameChange}
+        placeholder="Enter your name"
+        style={{ padding: '0.5rem', width: '100%', maxWidth: '300px', marginBottom: '1rem' }}
+      />
+
+      {/* Goal input field */}
       <input
         type="text"
         value={goal}
-        onChange={handleChange}
+        onChange={handleGoalChange}
         placeholder="Enter your career goal"
         style={{ padding: '0.5rem', width: '100%', maxWidth: '300px', marginBottom: '1rem' }}
       />
@@ -81,10 +93,10 @@ function Profile() {
       {/* Submit button */}
       <br />
       <button onClick={handleClick} style={{ padding: '0.5rem 1rem' }}>
-        Submit Goal
+        Submit
       </button>
 
-      {/* Show saved goal below */}
+      {/* Show saved message below */}
       {message && <p style={{ marginTop: '1rem', fontWeight: 'bold' }}>{message}</p>}
     </div>
   );
