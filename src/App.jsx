@@ -1,5 +1,6 @@
 // CareerPin Basic Starter App with Routing
 // Now uses fetch() to call OpenAI API for career suggestions in frontend
+// Stage 4: Added copy-to-clipboard functionality for AI response
 
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
@@ -46,8 +47,8 @@ function Profile() {
   const [message, setMessage] = useState("");
   const [prompt, setPrompt] = useState("");
   const [aiResponse, setAiResponse] = useState("");
+  const [copied, setCopied] = useState(false); // Track if copied
 
-  // Load saved profile from localStorage on first render
   useEffect(() => {
     const saved = localStorage.getItem("userProfile");
     if (saved) {
@@ -57,19 +58,16 @@ function Profile() {
     }
   }, []);
 
-  // Update the profile state on input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUserProfile({ ...userProfile, [name]: value });
   };
 
-  // Save the profile to localStorage and show a message
   const handleSubmit = () => {
     localStorage.setItem("userProfile", JSON.stringify(userProfile));
     setMessage(`Welcome ${userProfile.name}, your career goal is saved: ${userProfile.goal}`);
   };
 
-  // Reset all profile fields and clear localStorage
   const handleReset = () => {
     localStorage.clear();
     setUserProfile({
@@ -86,7 +84,6 @@ function Profile() {
     setMessage("");
   };
 
-  // Generate a prompt from user profile and call AI API
   const generatePrompt = () => {
     const { name, goal, skills, interests, education, experience, industries } = userProfile;
     const newPrompt = `Based on the following profile:\n` +
@@ -102,7 +99,6 @@ function Profile() {
     fetchAiResponse(newPrompt);
   };
 
-  // Call OpenAI API and store response
   const fetchAiResponse = async (text) => {
     try {
       const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -126,6 +122,14 @@ function Profile() {
       console.error("Error from OpenAI API:", error);
       setAiResponse("An error occurred while contacting the AI.");
     }
+  };
+
+  const handleCopy = () => {
+    if (!aiResponse) return;
+    navigator.clipboard.writeText(aiResponse).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
   };
 
   return (
@@ -189,11 +193,14 @@ function Profile() {
         </div>
       )}
 
-      {/* Display AI Response */}
+      {/* Display AI Response with Copy Button */}
       {aiResponse && (
         <div style={{ marginTop: '2rem', backgroundColor: '#2d4f2d', padding: '1rem', borderRadius: '8px', color: '#fff' }}>
           <h3>AI Suggestions:</h3>
           <pre>{aiResponse}</pre>
+          <button onClick={handleCopy} style={{ marginTop: '0.5rem', backgroundColor: '#3a7f3a', color: 'white', padding: '0.5rem' }}>
+            {copied ? "Copied!" : "Copy to Clipboard"}
+          </button>
         </div>
       )}
     </div>
