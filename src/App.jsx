@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import SavedSuggestions from './SavedSuggestions';
 
 function App() {
   return (
@@ -11,11 +12,13 @@ function App() {
         <nav style={{ marginBottom: '2rem' }}>
           <Link to="/" style={{ marginRight: '1rem', fontWeight: 'bold', color: '#61dafb' }}>Home</Link>
           <Link to="/profile" style={{ fontWeight: 'bold', color: '#61dafb' }}>Profile</Link>
+          <Link to="/saved" style={{ marginLeft: '1rem', fontWeight: 'bold', color: '#61dafb' }}>Saved</Link>
         </nav>
 
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/saved" element={<SavedSuggestions />} />
         </Routes>
       </div>
     </Router>
