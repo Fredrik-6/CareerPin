@@ -4,6 +4,7 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import SavedSuggestions from './SavedSuggestions';
+import Dashboard from "./Dashboard";
 
 function App() {
   return (
@@ -16,7 +17,7 @@ function App() {
         </nav>
 
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/saved" element={<SavedSuggestions />} />
         </Routes>
