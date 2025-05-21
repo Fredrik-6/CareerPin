@@ -5,6 +5,7 @@ function Dashboard() {
   const [profile, setProfile] = useState(null);
   const [savedCount, setSavedCount] = useState(0);
   const [latestSuggestion, setLatestSuggestion] = useState("");
+  const [latestDate, setLatestDate] = useState("");
 
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem("userProfile"));
@@ -14,8 +15,24 @@ function Dashboard() {
     if (suggestions.length > 0) {
       const last = suggestions[suggestions.length - 1];
       setLatestSuggestion(last.suggestion);
+      setLatestDate(new Date(last.date).toLocaleString());
     }
   }, []);
+
+  const handleDeleteLast = () => {
+    const suggestions = JSON.parse(localStorage.getItem("careerpin_suggestions") || "[]");
+    suggestions.pop();
+    localStorage.setItem("careerpin_suggestions", JSON.stringify(suggestions));
+    setSavedCount(suggestions.length);
+    if (suggestions.length > 0) {
+      const last = suggestions[suggestions.length - 1];
+      setLatestSuggestion(last.suggestion);
+      setLatestDate(new Date(last.date).toLocaleString());
+    } else {
+      setLatestSuggestion("");
+      setLatestDate("");
+    }
+  };
 
   return (
     <div style={{ padding: '2rem', backgroundColor: '#1e1e1e', color: '#fff', minHeight: '100vh' }}>
@@ -46,7 +63,11 @@ function Dashboard() {
         {savedCount > 0 && (
           <div style={{ marginTop: '1rem', backgroundColor: '#344834', padding: '1rem', borderRadius: '6px' }}>
             <h4>Most Recent Suggestion:</h4>
+            <small>Saved on: {latestDate}</small>
             <pre style={{ whiteSpace: 'pre-wrap' }}>{latestSuggestion}</pre>
+            <button onClick={handleDeleteLast} style={{ marginTop: '0.5rem', backgroundColor: '#f44336', color: '#fff', padding: '0.5rem 1rem', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+              Delete Last Suggestion
+            </button>
           </div>
         )}
       </div>
