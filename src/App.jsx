@@ -11,7 +11,7 @@ function App() {
     <Router>
       <div style={{ padding: '2rem', fontFamily: 'Arial, sans-serif', backgroundColor: '#1e1e1e', color: '#fff', minHeight: '100vh' }}>
         <nav style={{ marginBottom: '2rem' }}>
-          <Link to="/" style={{ marginRight: '1rem', fontWeight: 'bold', color: '#61dafb' }}>Home</Link>
+          <Link to="/Dashboard" style={{ marginRight: '1rem', fontWeight: 'bold', color: '#61dafb' }}>Home</Link>
           <Link to="/profile" style={{ fontWeight: 'bold', color: '#61dafb' }}>Profile</Link>
           <Link to="/saved" style={{ marginLeft: '1rem', fontWeight: 'bold', color: '#61dafb' }}>Saved</Link>
         </nav>
